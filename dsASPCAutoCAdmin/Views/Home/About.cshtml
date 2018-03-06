@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "About";
+}
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+<p>Use this area to provide additional information.</p>
+
+@(Html.DevExpress()
+        .BootstrapGridView("gridTotalSummary")
+        .KeyFieldName("OrderID")
+        .Settings(settings => settings.ShowFooter(true))
+        .Columns(columns =>
+        {
+            columns
+                .Add()
+                .FieldName("CompanyName");
+            columns
+                .AddTextColumn()
+                .FieldName("UnitPrice")
+                .PropertiesTextEdit(properties => properties.DisplayFormatString("c"));
+            columns
+                .Add()
+                .FieldName("Quantity");
+            columns
+                .AddTextColumn()
+                .FieldName("Total")
+                .UnboundType(UnboundColumnType.Decimal)
+                .UnboundExpression("UnitPrice * Quantity")
+                .PropertiesTextEdit(properties => properties.DisplayFormatString("c"));
+        })
+        .TotalSummary(summary =>
+        {
+            summary
+                .Add()
+                .FieldName("CompanyName")
+                .SummaryType(SummaryItemType.Count);
+            summary
+                .Add()
+                .FieldName("Total")
+                .SummaryType(SummaryItemType.Sum);
+        })
+        .Routes(routes => routes
+        .MapRoute(r => r
+            .Controller("GridView")
+            .Action("TotalSummary")))
+        .Bind(Model))
